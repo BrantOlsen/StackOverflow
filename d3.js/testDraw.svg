@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml-stylesheet href="svg_style.css" type="text/css"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"                 "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="testDraw.wd" width="03910" height="02380" viewBox="-100 -100 04410 02480">
+<g id="container">
+<g id="PA921" stroke="BLACK   " fill="BLACK   " >
+<path d="
+M 01241 01411 L 01230.01 01411.01 L 01227 01400 L 01220 01421 L 01217 01411 L 01207.01             01411.01 L 01207.01 01669.01 L 01208 01675 L 01210 01679 L 01215 01681 L 01220 01683 L 01241.01 01683.01 L 01241.01 01411.01" />
+<text x="01216" y="01652" style="font-size:018px" >
+13
+</text>
+<text x="01216" y="01635" style="font-size:018px" >
+10
+</text>
+<text x="01221" y="01499" style="font-size:018px" >
+6
+</text>
+<text x="01221" y="01482" style="font-size:018px" >
+5
+</text>
+<text x="01221" y="01465" style="font-size:018px" >
+4
+</text>
+<text x="01221" y="01448" style="font-size:018px" >
+3
+</text>
+<text x="01198" y="01705" style="font-size:018px" >
+PA921
+</text>
+</g>
+<g id="PA2500" stroke="BLACK   " fill="BLACK   " >
+<path d="
+M 00612 00561 L 00622.01 00561.01 L 00625 00550 L 00632 00571 L 00635 00561 L 00646.01 00561.01 L 00646.01 00183.01 L 00644 00177 L 00642 00173 L 00637 00171 L 00632 00170 L 00612.01 00170.01 L 00612.01 00561.01" />
+<text x="00626" y="00479" style="font-size:018px" >
+G
+</text>
+<text x="00626" y="00224" style="font-size:018px" >
+E
+</text>
+<text x="00654" y="00158" style="font-size:018px" >
+PA2500
+</text>
+</g>
+<g id="JA2500" stroke="BLACK   " fill="BLACK   " >
+<path d="
+M 00612 00170 L 00595.01 00170.01 L 00595.01 00561.01 L 00612.01 00561.01 L 00612.01     00170.01" />
+<text x="00535" y="00158" style="font-size:018px" >
+JA2500
+</text>
+</g>
+<g id="PA3002" stroke="BLACK   " fill="BLACK   " >
+<path d="
+M 01377 00289 L 01387.01 00289.01 L 01390 00278 L 01397 00299 L 01400 00289 L 01411.01 00289.01 L 01411.01 00166.01 L 01409 00160 L 01407 00156 L 01402 00154 L 01397 00153 L 01377.01 00153.01 L 01377.01 00289.01" />
+<text x="01391" y="00224" style="font-size:018px" >
+B
+</text>
+<text x="01419" y="00158" style="font-size:018px" >
+PA3002
+</text>
+</g>
+<g id="JA3002" stroke="BLACK   " fill="BLACK   " >
+<path d="
+M 01377 00153 L 01360.01 00153.01 L 01360.01 00289.01 L 01377.01 00289.01 L 01377.01 00153.01" />
+<text x="01283" y="00158" style="font-size:018px" >
+JA3002
+</text>
+</g>
+
+</g>
+</svg>
