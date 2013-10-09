@@ -15,7 +15,6 @@
             height = 500 - margin.top - margin.bottom;
 
             // Set SVG object
-            /*
             var object = document.getElementById('drawing');
 
             if (object.contentDocument)
@@ -23,7 +22,8 @@
             else {
                 try {svgDoc = object.getSVGDocument();}
                 catch(exception) {}
-            }*/
+            }
+            /*
             d3.html('testDraw.svg', function(data) {
                $('body').append(data);
 
@@ -38,8 +38,28 @@
 
                 svg.call(zoom);
             });
+            */
+            svg = d3.select(svgDoc).select("svg")
+            .attr("pointer-events", "all");
+
+            g = svg.select("#container")
+            .attr("pointer-events", "all");
+
+            var zoom = d3.behavior.zoom()
+            .on("zoom", zoomed,false)
+            .on('zoomstart', function() {
+                if (d3.event.sourceEvent.type != 'mousewheel') {
+                    $('#drawing').css('pointer-events', 'none');
+                }
+            })
+            .on('zoomend', function() {
+                if (d3.event.sourceEvent != null) {
+                    $('#drawing').css('pointer-events', 'all');
+                }
+            });;
 
 
+            svg.call(zoom);
         };
 
         function zoomed() {
@@ -55,12 +75,10 @@
     <div id="testDraw"></div>
 
     <div>
-        <!--
         <iframe id="drawing" type="image/svg+xml"
         src="testDraw.svg"
         width="975px" height="480px" onload="initDocument();">
         </iframe>
-        -->
 <!--
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="testDraw.wd" width="03910" height="02380" viewBox="-100 -100 04410 02480">
 <g id="container">
@@ -129,11 +147,11 @@ JA3002
 
 </g>
 </svg>
--->
-    </div>
 
     <script>
         initDocument();
     </script>
+-->
+    </div>
 </body>
 </html>
