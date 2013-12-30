@@ -33,7 +33,9 @@
         var pb_label = $('.progress-label');
 
         // Create a YUI sandbox on your page.
-        YUI().use('gallery-progress-bar', 'node', 'uploader', function (Y) {
+        YUI().use('gallery-progress-bar', 'node', 'uploader', 'uploader-flash', function (Y) {
+            Y.Uploader = Y.UploaderFlash;
+
             if (Y.Uploader.TYPE != "none") {
                 uploader = new Y.Uploader({
                     width: "300px",
@@ -86,6 +88,7 @@
                     uploader.set("fileFilters", [{description:"Images", extensions:"*.jpg;*.png;*.gif"},
                                                  {description:"Videos", extensions:"*.avi;*.mov;*.mpg"}]);
                     uploader.render("#selectFilesButtonContainer");
+                    $('#divContainer').hide();
                 }
 
                 // Add start upload button.
