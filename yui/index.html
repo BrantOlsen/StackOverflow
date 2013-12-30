@@ -1,1 +1,64 @@
-<div>Test</div>
+<head>
+    <script src="jquery-1.10.2.js"></script>
+    <script src="./yui/build/yui/yui.js"></script>
+</head>
+<body>
+    <div>Upload Files Test</div>
+    <div id="uploaderContainerID"></div>
+    <div id="divContainer" style="border: 2px black solid; height: 100px; margin: 10px;"></div>
+    <div id="selectFilesButtonContainer"></div>
+    <br>
+    <div id="status"></div>
+
+    <script>
+        // Create a YUI sandbox on your page.
+        YUI().use('node', 'uploader', function (Y) {
+            if (Y.Uploader.TYPE != "none") {
+                var uploader = new Y.Uploader({width: "300px",
+                                               height: "40px"});
+                uploader.set("multipleFiles", true);
+                uploader.uploadAll("http://url.to/upload.php");
+                uploader.on("totaluploadprogress", function (event) {
+                    Y.log("Bytes uploaded: " + event.bytesLoaded);
+                    Y.log("Bytes remaining: " + (event.bytesTotal - event.bytesLoaded));
+                    Y.log("Percent uploaded: " + event.percentLoaded);
+                });
+                uploader.on('alluploadscomplete', function () {
+                    $('#status').append('<div>Upload Complete</div>.');
+                });
+                uploader.on('uploaderror', function (event) {
+                    $('#status').append('<div>Upload of ' + event.file.getAttrs().name + ' failed.</div>');
+                });
+                uploader.on('uploadcomplete', function (event) {
+                    $('#status').append('<div>Uploaded ' + event.file.getAttrs().name + ' successfully.</div>');
+                });
+                uploader.on('uploadstart', function () {
+                    $('#status').append('<div>Upload has started.</div>');
+                });
+                uploader.on('fileselect', function(event) {
+                    var html = '<div>' + event.fileList.length + ' files selected to be uploaded:';
+                    html += '<ul>';
+                    for (var index = 0; index < event.fileList.length; ++index) {
+                        html += '<li>' + event.fileList[index].getAttrs().name + '</li>';
+                    }
+                    html += '</ul>';
+                    $('#status').append(html);
+
+                });
+
+                if (Y.Uploader.TYPE == "html5") {
+                    uploader.set("dragAndDropArea", "#divContainer");
+                    uploader.render("#selectFilesButtonContainer");
+                }
+                else if (Y.Uploader.TYPE == "flash") {
+                    uploader.set("fileFilters", [{description:"Images", extensions:"*.jpg;*.png;*.gif"},
+                                                 {description:"Videos", extensions:"*.avi;*.mov;*.mpg"}]);
+                    uploader.render("#selectFilesButtonContainer");
+                }
+            }
+            else {
+                Y.log("No Flash or HTML5 capabilities detected.");
+            }
+        });
+    </script>
+</body>
