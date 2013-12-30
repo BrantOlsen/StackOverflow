@@ -1,39 +1,71 @@
 <head>
+    <link rel="stylesheet" type="text/css" href="./css/ui-lightness/jquery-ui-1.10.3.custom.css">
+    <style>
+        .ui-progressbar {
+            position: relative;
+        }
+        .progress-label {
+            position: absolute;
+            left: 50%;
+            top: 4px;
+            font-weight: bold;
+            text-shadow: 1px 1px 0 #fff;
+        }
+    </style>
+
     <script src="jquery-1.10.2.js"></script>
+    <script src="./js/jquery-ui-1.10.3.custom.js"></script>
     <script src="./yui/build/yui/yui.js"></script>
 </head>
 <body>
     <div>Upload Files Test</div>
     <div id="uploaderContainerID"></div>
-    <div id="divContainer" style="border: 2px black solid; height: 100px; margin: 10px;"></div>
+    <div id="divContainer" style="border: 2px black solid; height: 100px; margin: 10px;" title="Drag files here to upload."></div>
     <div id="selectFilesButtonContainer"></div>
+    <div><button id="start_upload">Start Upload</button>
     <br>
+    <div id="progress_bar"><div class="progress-label"></div></div>
     <div id="status"></div>
 
     <script>
+        var uploader = null;
+        var pb = $("#progress_bar").progressbar();
+        var pb_label = $('.progress-label');
+
         // Create a YUI sandbox on your page.
-        YUI().use('node', 'uploader', function (Y) {
+        YUI().use('gallery-progress-bar', 'node', 'uploader', function (Y) {
             if (Y.Uploader.TYPE != "none") {
-                var uploader = new Y.Uploader({width: "300px",
-                                               height: "40px"});
-                uploader.set("multipleFiles", true);
-                uploader.uploadAll("http://url.to/upload.php");
+                uploader = new Y.Uploader({
+                    width: "300px",
+                    height: "40px"
+                });
+                uploader.set('multipleFiles', true);
+                uploader.set('postVarsPerFile', {
+                   collection: 'DEV0',
+                   collection_id: 45
+                });
                 uploader.on("totaluploadprogress", function (event) {
-                    Y.log("Bytes uploaded: " + event.bytesLoaded);
-                    Y.log("Bytes remaining: " + (event.bytesTotal - event.bytesLoaded));
-                    Y.log("Percent uploaded: " + event.percentLoaded);
+                    pb_label.text(event.bytesLoaded + 'B of ' + event.bytesTotal + 'B Uploaded');
+                    pb.progressbar( "option", {
+                        value: event.percentLoaded
+                    });
                 });
                 uploader.on('alluploadscomplete', function () {
-                    $('#status').append('<div>Upload Complete</div>.');
+                    Y.log('Upload Complete.');
+                    pb_label.text('Upload Complete');
                 });
                 uploader.on('uploaderror', function (event) {
-                    $('#status').append('<div>Upload of ' + event.file.getAttrs().name + ' failed.</div>');
+                    $('#status').append('<div>Upload of ' + event.file.getAttrs().name + ' failed.');
+
+                    // Indicate an error in the progress bar.
+                    pb.progressbar( "option", "value", false );
                 });
                 uploader.on('uploadcomplete', function (event) {
-                    $('#status').append('<div>Uploaded ' + event.file.getAttrs().name + ' successfully.</div>');
+                    Y.log('Uploaded ' + event.file.getAttrs().name + ' successfully.');
                 });
                 uploader.on('uploadstart', function () {
-                    $('#status').append('<div>Upload has started.</div>');
+                    Y.log('Upload has started');
+                    pb_label.text("Uploading...");
                 });
                 uploader.on('fileselect', function(event) {
                     var html = '<div>' + event.fileList.length + ' files selected to be uploaded:';
@@ -55,6 +87,11 @@
                                                  {description:"Videos", extensions:"*.avi;*.mov;*.mpg"}]);
                     uploader.render("#selectFilesButtonContainer");
                 }
+
+                // Add start upload button.
+                $('#start_upload').click(function() {
+                    uploader.uploadAll("upload.php");
+                });
             }
             else {
                 Y.log("No Flash or HTML5 capabilities detected.");
