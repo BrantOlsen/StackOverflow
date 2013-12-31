@@ -103,7 +103,9 @@
                         $('#status').find(':contains('+file_name+')').css('background-color', 'green');
                     }
                     else {
-                        $('#status').find(':contains('+file_name+')').css('background-color', 'red');
+                        $('#status').find(':contains('+file_name+')')
+                                    .css('background-color', 'red')
+                                    .attr('title', event.data);
                     }
                 });
                 // Update the progress bar that the upload has started.
