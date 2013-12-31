@@ -1,6 +1,9 @@
 <head>
     <link rel="stylesheet" type="text/css" href="./css/ui-lightness/jquery-ui-1.10.3.custom.css">
     <style>
+        #status {
+            margin-top: 10px;
+        }
         .ui-progressbar {
             position: relative;
         }
@@ -10,6 +13,12 @@
             top: 4px;
             font-weight: bold;
             text-shadow: 1px 1px 0 #fff;
+        }
+        .file-to-upload {
+            margin: 5px;
+            padding: 5px;
+            border: 1px grey solid;
+            display: inline-block;
         }
     </style>
 
@@ -22,7 +31,7 @@
     <div id="uploaderContainerID"></div>
     <div id="divContainer" style="border: 2px black solid; height: 100px; margin: 10px;" title="Drag files here to upload."></div>
     <div id="selectFilesButtonContainer"></div>
-    <div><button id="start_upload">Start Upload</button>
+    <div><button id="start_upload">Start Upload</button><button id="clear_upload">Clear File List</button></div>
     <br>
     <div id="progress_bar"><div class="progress-label"></div></div>
     <div id="status"></div>
@@ -32,10 +41,17 @@
         var pb = $("#progress_bar").progressbar();
         var pb_label = $('.progress-label');
 
-        // Create a YUI sandbox on your page.
-        YUI().use('gallery-progress-bar', 'node', 'uploader', 'uploader-flash', function (Y) {
-            Y.Uploader = Y.UploaderFlash;
+        function populate_status(file_list) {
+            var $elem = $('#status');
+            var html = '';
+            for (var index = 0; index < file_list.length; ++index) {
+                html += '<span class="file-to-upload">' + file_list[index].getAttrs().name + '</span>';
+            }
+            $elem.html(html);
+        }
 
+        // Create a YUI sandbox on your page.
+        YUI().use('node', 'uploader', 'uploader-flash', function (Y) {
             if (Y.Uploader.TYPE != "none") {
                 uploader = new Y.Uploader({
                     width: "300px",
@@ -57,27 +73,23 @@
                     pb_label.text('Upload Complete');
                 });
                 uploader.on('uploaderror', function (event) {
-                    $('#status').append('<div>Upload of ' + event.file.getAttrs().name + ' failed.');
+                    var file_name = event.file.getAttrs().name;
+                    $('#status').find(':contains('+file_name+')').css('background-color', 'red');
 
                     // Indicate an error in the progress bar.
                     pb.progressbar( "option", "value", false );
                 });
                 uploader.on('uploadcomplete', function (event) {
                     Y.log('Uploaded ' + event.file.getAttrs().name + ' successfully.');
+                    var file_name = event.file.getAttrs().name;
+                    $('#status').find(':contains('+file_name+')').css('background-color', 'green');
                 });
                 uploader.on('uploadstart', function () {
                     Y.log('Upload has started');
                     pb_label.text("Uploading...");
                 });
                 uploader.on('fileselect', function(event) {
-                    var html = '<div>' + event.fileList.length + ' files selected to be uploaded:';
-                    html += '<ul>';
-                    for (var index = 0; index < event.fileList.length; ++index) {
-                        html += '<li>' + event.fileList[index].getAttrs().name + '</li>';
-                    }
-                    html += '</ul>';
-                    $('#status').append(html);
-
+                    populate_status(uploader.getAttrs().fileList);
                 });
 
                 if (Y.Uploader.TYPE == "html5") {
@@ -94,6 +106,11 @@
                 // Add start upload button.
                 $('#start_upload').click(function() {
                     uploader.uploadAll("upload.php");
+                });
+
+                $('#clear_upload').click(function() {
+                   uploader.reset('fileList');
+                   populate_status(uploader.getAttrs().fileList);
                 });
             }
             else {
