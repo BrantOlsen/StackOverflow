@@ -9,14 +9,6 @@ $video_name = $_FILES['Filedata']['name'];
 $dir_name = $_FILES['Filedata']['tmp_name'];
 $collection_name = $_POST['collection'];
 
-print 'Uploading ' . $video_name  . ' to ' . $dir_name .
-      ' for the collection ' . $collection_name . '(' . $_POST['collection_id'] . ')' . "\n";
-var_dump($_FILES);
-print "\n";
-var_dump($_POST);
-
-
-
 $user = "root";
 $password = "makingthemoney";
 $dbh = null;
@@ -38,6 +30,7 @@ if ($collection_id == 0) {
     $collection_id = add_collection($dbh, $collection_name);
 }
 add_video($dbh, $video_name, $dir_id, $collection_id);
+print "Upload Success";
 
 function get_collection_id($dbh, $collection_name) {
     $sql = 'SELECT collection_id FROM aladdin.collection WHERE name = :collection_name';

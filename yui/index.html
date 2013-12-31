@@ -26,13 +26,19 @@
     <script src="./js/jquery-ui-1.10.3.custom.js"></script>
     <script src="./yui/build/yui/yui.js"></script>
 </head>
+
 <body>
     <div>Upload Files Test</div>
+
     <div id="uploaderContainerID"></div>
     <div id="divContainer" style="border: 2px black solid; height: 100px; margin: 10px;" title="Drag files here to upload."></div>
     <div id="selectFilesButtonContainer"></div>
-    <div><button id="start_upload">Start Upload</button><button id="clear_upload">Clear File List</button></div>
-    <br>
+    <div>*DO not upload files with the same name as they will override one another once uploaded to the same collection.</div>
+
+    <div>
+        <button id="start_upload">Start Upload</button><button id="clear_upload">Clear File List</button>
+    </div>
+
     <div id="progress_bar"><div class="progress-label"></div></div>
     <div id="status"></div>
 
@@ -41,6 +47,8 @@
         var pb = $("#progress_bar").progressbar();
         var pb_label = $('.progress-label');
 
+        // Show the user which files will be uploaded. Will be used
+        // to show the user which files uploaded successfully and which failed.
         function populate_status(file_list) {
             var $elem = $('#status');
             var html = '';
@@ -50,28 +58,35 @@
             $elem.html(html);
         }
 
-        // Create a YUI sandbox on your page.
+        // Create a YUI sandbox to create the file uploader.
         YUI().use('node', 'uploader', 'uploader-flash', function (Y) {
             if (Y.Uploader.TYPE != "none") {
+                // Initalize the uploader.
                 uploader = new Y.Uploader({
                     width: "300px",
                     height: "40px"
                 });
+                // Allow more than one file to be selected for upload.
                 uploader.set('multipleFiles', true);
+                // Pass the collection name and id to each file upload.
                 uploader.set('postVarsPerFile', {
                    collection: 'DEV0',
                    collection_id: 45
                 });
+                // Update the progress bar as data is uploaded.
                 uploader.on("totaluploadprogress", function (event) {
                     pb_label.text(event.bytesLoaded + 'B of ' + event.bytesTotal + 'B Uploaded');
                     pb.progressbar( "option", {
                         value: event.percentLoaded
                     });
                 });
+                // Update the progress bar once all data has been uploaded.
                 uploader.on('alluploadscomplete', function () {
                     Y.log('Upload Complete.');
                     pb_label.text('Upload Complete');
                 });
+                // Update the progress bar and status area when a file fails to upload. Fail
+                // in this case means a non-200 status returned by the upload page.
                 uploader.on('uploaderror', function (event) {
                     var file_name = event.file.getAttrs().name;
                     $('#status').find(':contains('+file_name+')').css('background-color', 'red');
@@ -79,19 +94,31 @@
                     // Indicate an error in the progress bar.
                     pb.progressbar( "option", "value", false );
                 });
+                // Signals that hte upload has finished. event.data will tell whether or
+                // not the upload was actually successful.
                 uploader.on('uploadcomplete', function (event) {
-                    Y.log('Uploaded ' + event.file.getAttrs().name + ' successfully.');
+                    Y.log('Uploaded ' + event.file.getAttrs().name + '.');
                     var file_name = event.file.getAttrs().name;
-                    $('#status').find(':contains('+file_name+')').css('background-color', 'green');
+                    if (event.data.indexOf("Upload Success") >= 0) {
+                        $('#status').find(':contains('+file_name+')').css('background-color', 'green');
+                    }
+                    else {
+                        $('#status').find(':contains('+file_name+')').css('background-color', 'red');
+                    }
                 });
+                // Update the progress bar that the upload has started.
                 uploader.on('uploadstart', function () {
                     Y.log('Upload has started');
                     pb_label.text("Uploading...");
                 });
+                // Update the file list when the user selects any new files.
                 uploader.on('fileselect', function(event) {
                     populate_status(uploader.getAttrs().fileList);
                 });
 
+                // This changes based on the browser the user is using. Newer browsers
+                // allow us to use the drag and drop uploads. While older browsers
+                // are forced to use flash.
                 if (Y.Uploader.TYPE == "html5") {
                     uploader.set("dragAndDropArea", "#divContainer");
                     uploader.render("#selectFilesButtonContainer");
@@ -108,12 +135,14 @@
                     uploader.uploadAll("upload.php");
                 });
 
+                // Add clear upload files button.
                 $('#clear_upload').click(function() {
                    uploader.reset('fileList');
                    populate_status(uploader.getAttrs().fileList);
                 });
             }
             else {
+                alert("No Flash or HTML5 capabilities detected. No upload can be performed.");
                 Y.log("No Flash or HTML5 capabilities detected.");
             }
         });
