@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 $video_name = $_FILES['Filedata']['name'];
 $dir_name = $_FILES['Filedata']['tmp_name'];
-$collection_name = $_POST['collection'];
+$collection_id = $_POST['collection_id'];
 
 $user = "root";
 $password = "makingthemoney";
@@ -25,11 +25,8 @@ $dir_id = get_folder_id($dbh, $dir_name);
 if ($dir_id == 0) {
     $dir_id = add_folder($dbh, $dir_name);
 }
-$collection_id = get_collection_id($dbh, $collection_name);
-if ($collection_id == 0) {
-    $collection_id = add_collection($dbh, $collection_name);
-}
-add_video($dbh, $video_name, $dir_id, $collection_id);
+$video_id = add_video($dbh, $video_name, $dir_id, $collection_id);
+add_video_collection_item($dbh, $video_id, $collection_id);
 print "Upload Success";
 
 function get_collection_id($dbh, $collection_name) {
@@ -43,7 +40,6 @@ function get_collection_id($dbh, $collection_name) {
         $id = $row['collection_id'];
     }
     return $id;
-
 }
 
 function add_collection($dbh, $collection_name) {
@@ -86,6 +82,17 @@ function add_video($dbh, $name, $dir_id, $source_id) {
     $insert->bindParam(':name', $name);
     $insert->bindParam(':dir_id', $dir_id);
     $insert->bindParam(':source_id', $source_id);
+    $insert->execute();
+
+    return $dbh->lastInsertId();
+}
+
+function add_video_collection_item($dbh, $video_id, $collection_id) {
+    $sql = 'INSERT INTO aladdin.COLLECTION_VIDEOs (video_id, collection_id) ' .
+            'VALUES (:video_id, :collection_id)';
+    $insert = $dbh->prepare($sql);
+    $insert->bindParam(':video_id', $video_id);
+    $insert->bindParam(':collection_id', $collection_id);
     $insert->execute();
 }
 

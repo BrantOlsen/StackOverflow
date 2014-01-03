@@ -1,0 +1,59 @@
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+        <script src="jquery-1.10.2.js"></script>
+        <script src="./js/jquery-ui-1.10.3.custom.js"></script>
+        <script src="./yui/build/yui/yui.js"></script>
+    </head>
+    <body>
+        Create Collection
+        <input type="text" name="name" />
+        <button id="create">Create</button>
+
+        <div>
+            Existing Collections
+            <ul id="collection-list">
+                <li></li>
+            </ul>
+        </div>
+
+        <script>
+            function LoadCollections() {
+                $.ajax({
+                    url: 'get_collections.php',
+                    success: function(data) {
+                        var collections = JSON.parse(data);
+                        var html = '';
+                        for (var index = 0; index < collections.length; ++index) {
+                            html += '<li><a href="edit.html?collection_id=' +
+                                    collections[index].collection_id + '">' + collections[index].name
+                                    '</a></li>';
+                        }
+                        $('#collection-list').html(html);
+                    }
+                });
+            }
+            LoadCollections();
+
+            function SaveCollection() {
+                $.ajax({
+                    url: 'save_collection.php',
+                    data: {
+                        name: $('input[name=name]').val()
+                    },
+                    success: function(data) {
+                        var collection = JSON.parse(data);
+                        window.location = "edit.html?collection_id=" + collection.id;
+                    }
+                });
+            }
+
+            $('#create').click(function() {
+                SaveCollection();
+            });
+        </script>
+
+    </body>
+</html>

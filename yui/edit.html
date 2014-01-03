@@ -28,6 +28,8 @@
 </head>
 
 <body>
+    <div><a href="create.html">Create New Collection</a></div>
+
     <div>Upload Files Test</div>
 
     <div id="uploaderContainerID"></div>
@@ -41,25 +43,48 @@
 
     <div id="progress_bar"><div class="progress-label"></div></div>
     <div id="status"></div>
+    <div>Current Files
+        <ul id="video-list"></ul>
+    </div>
 
     <script>
-        var uploader = null;
         var pb = $("#progress_bar").progressbar();
         var pb_label = $('.progress-label');
 
         // Show the user which files will be uploaded. Will be used
         // to show the user which files uploaded successfully and which failed.
-        function populate_status(file_list) {
+        function PopulateStatus(file_list) {
             var $elem = $('#status');
             var html = '';
             for (var index = 0; index < file_list.length; ++index) {
                 html += '<span class="file-to-upload">' + file_list[index].getAttrs().name + '</span>';
             }
             $elem.html(html);
-        }
+        };
+
+        function LoadVideos(collection_id) {
+            $.ajax({
+                url: 'get_videos.php',
+                data: {
+                    collection_id: collection_id
+                },
+                success: function(data) {
+                    var videos = JSON.parse(data);
+                    var html = "";
+                    for (var index = 0; index < videos.length; ++index) {
+                        html += '<li>' + videos[index].video_file_name + '</li>';
+                    }
+                    $('#video-list').html(html);
+                }
+            });
+        };
 
         // Create a YUI sandbox to create the file uploader.
-        YUI().use('node', 'uploader', 'uploader-flash', function (Y) {
+        YUI().use('querystring' , 'node', 'uploader', 'uploader-flash', function (Y) {
+            var uploader = null;
+            var collection_id = Y.QueryString.parse(window.location.search.replace('?', '')).collection_id;
+            LoadVideos(collection_id);
+
             if (Y.Uploader.TYPE != "none") {
                 // Initalize the uploader.
                 uploader = new Y.Uploader({
@@ -70,8 +95,7 @@
                 uploader.set('multipleFiles', true);
                 // Pass the collection name and id to each file upload.
                 uploader.set('postVarsPerFile', {
-                   collection: 'DEV0',
-                   collection_id: 45
+                   collection_id: collection_id
                 });
                 // Update the progress bar as data is uploaded.
                 uploader.on("totaluploadprogress", function (event) {
@@ -84,6 +108,7 @@
                 uploader.on('alluploadscomplete', function () {
                     Y.log('Upload Complete.');
                     pb_label.text('Upload Complete');
+                    LoadVideos(collection_id);
                 });
                 // Update the progress bar and status area when a file fails to upload. Fail
                 // in this case means a non-200 status returned by the upload page.
@@ -115,7 +140,7 @@
                 });
                 // Update the file list when the user selects any new files.
                 uploader.on('fileselect', function(event) {
-                    populate_status(uploader.getAttrs().fileList);
+                    PopulateStatus(uploader.getAttrs().fileList);
                 });
 
                 // This changes based on the browser the user is using. Newer browsers
@@ -132,12 +157,17 @@
                     $('#divContainer').hide();
                 }
 
-                // Add start upload button.
+                // Add start upload button to actually kick off the upload.
                 $('#start_upload').click(function() {
-                    uploader.uploadAll("upload.php");
+                    if (uploader.getAttrs().fileList.length > 0) {
+                        uploader.uploadAll("upload.php");
+                    }
+                    else {
+                        alert("Select some files to upload first.");
+                    }
                 });
 
-                // Add clear upload files button.
+                // Add clear upload files button so that the list of files can be reset.
                 $('#clear_upload').click(function() {
                    uploader.reset('fileList');
                    populate_status(uploader.getAttrs().fileList);
