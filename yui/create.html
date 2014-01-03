@@ -23,8 +23,7 @@
             function LoadCollections() {
                 $.ajax({
                     url: 'get_collections.php',
-                    success: function(data) {
-                        var collections = JSON.parse(data);
+                    success: function(collections) {
                         var html = '';
                         for (var index = 0; index < collections.length; ++index) {
                             html += '<li><a href="edit.html?collection_id=' +

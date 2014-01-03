@@ -64,12 +64,11 @@
 
         function LoadVideos(collection_id) {
             $.ajax({
-                url: 'get_videos.php',
+                url: 'get_videos',
                 data: {
                     collection_id: collection_id
                 },
-                success: function(data) {
-                    var videos = JSON.parse(data);
+                success: function(videos) {
                     var html = "";
                     for (var index = 0; index < videos.length; ++index) {
                         html += '<li>' + videos[index].video_file_name + '</li>';
