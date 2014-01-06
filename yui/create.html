@@ -22,7 +22,7 @@
         <script>
             function LoadCollections() {
                 $.ajax({
-                    url: 'get_collections.php',
+                    url: 'get_collections',
                     success: function(collections) {
                         var html = '';
                         for (var index = 0; index < collections.length; ++index) {
@@ -38,12 +38,11 @@
 
             function SaveCollection() {
                 $.ajax({
-                    url: 'save_collection.php',
+                    url: 'save_collection',
                     data: {
                         name: $('input[name=name]').val()
                     },
-                    success: function(data) {
-                        var collection = JSON.parse(data);
+                    success: function(collection) {
                         window.location = "edit.html?collection_id=" + collection.id;
                     }
                 });

@@ -1,0 +1,15 @@
+{
+  "name": "aladdin",
+  "description": "aladdin",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app"
+  },
+  "dependencies": {
+    "mysql": "2.x",
+    "socket.io": "*",
+    "always": "*",
+    "express": "3.x"
+  }
+}

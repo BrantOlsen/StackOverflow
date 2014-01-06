@@ -116,7 +116,7 @@
                     $('#status').find(':contains('+file_name+')').css('background-color', 'red');
 
                     // Indicate an error in the progress bar.
-                    pb.progressbar( "option", "value", false );
+                    pb.progressbar("option", "value", false);
                 });
                 // Signals that hte upload has finished. event.data will tell whether or
                 // not the upload was actually successful.
@@ -159,7 +159,7 @@
                 // Add start upload button to actually kick off the upload.
                 $('#start_upload').click(function() {
                     if (uploader.getAttrs().fileList.length > 0) {
-                        uploader.uploadAll("upload.php");
+                        uploader.uploadAll("save_video");
                     }
                     else {
                         alert("Select some files to upload first.");
@@ -169,7 +169,7 @@
                 // Add clear upload files button so that the list of files can be reset.
                 $('#clear_upload').click(function() {
                    uploader.reset('fileList');
-                   populate_status(uploader.getAttrs().fileList);
+                   PopulateStatus(uploader.getAttrs().fileList);
                 });
             }
             else {
