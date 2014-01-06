@@ -5,3 +5,5 @@ insert into `aladdin`.`process_job_status_lookup` (description, name) values ('J
 insert into `aladdin`.`process_job_status_lookup` (description, name) values ('Job is finished', 'FINISHED');
 
 insert into `aladdin`.`pipeline` (description, name) values ('dense sift', 'DenseSIFT');
+
+

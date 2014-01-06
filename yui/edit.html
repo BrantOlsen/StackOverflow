@@ -38,7 +38,9 @@
     <div>*DO not upload files with the same name as they will override one another once uploaded to the same collection.</div>
 
     <div>
-        <button id="start_upload">Start Upload</button><button id="clear_upload">Clear File List</button>
+        <button id="start_upload">Start Upload</button>
+        <button id="clear_upload">Clear File List</button>
+        <button id="process">Process Collection</button>
     </div>
 
     <div id="progress_bar"><div class="progress-label"></div></div>
@@ -62,6 +64,7 @@
             $elem.html(html);
         };
 
+        // Load the current videos in the collection.
         function LoadVideos(collection_id) {
             $.ajax({
                 url: 'get_videos',
@@ -77,6 +80,19 @@
                 }
             });
         };
+
+        // Start up the processing of this collection.
+        function ProcessCollection(collection_id) {
+            $.ajax({
+               url: 'process_collection',
+               data: {
+                   collection_id: collection_id
+               },
+               success: function(data) {
+                   alert(data);
+               }
+            });
+        }
 
         // Create a YUI sandbox to create the file uploader.
         YUI().use('querystring' , 'node', 'uploader', 'uploader-flash', function (Y) {
@@ -170,6 +186,10 @@
                 $('#clear_upload').click(function() {
                    uploader.reset('fileList');
                    PopulateStatus(uploader.getAttrs().fileList);
+                });
+
+                $('#process').click(function() {
+                    ProcessCollection(collection_id);
                 });
             }
             else {
