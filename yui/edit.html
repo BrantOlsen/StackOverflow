@@ -42,8 +42,13 @@
         <button id="clear_upload">Clear File List</button>
         <button id="process">Process Collection</button>
     </div>
+    <div id="process_status"></div>
 
-    <div id="progress_bar"><div class="progress-label"></div></div>
+
+    <div id="progress_bar">
+        <div class="progress-label"></div>
+
+    </div>
     <div id="status"></div>
     <div>Current Files
         <ul id="video-list"></ul>
@@ -89,16 +94,45 @@
                    collection_id: collection_id
                },
                success: function(data) {
-                   alert(data);
+                   LoadProcessStatus(collection_id);
                }
             });
-        }
+        };
+
+        // Get from the server the status of this collection's processing.
+        function LoadProcessStatus(collection_id) {
+            $.ajax({
+                url: 'get_process_status',
+                data: {
+                    collection_id: collection_id
+                },
+                success: function(data) {
+                    $('#process_status').text(data ? FormatProcessStatus(data) : "");
+                }
+            });
+        };
+
+        // Conver the process status from a number to text.
+        function FormatProcessStatus(status_id) {
+            if (status_id) {
+                if (status_id == 1) {
+                    return "Scheduled to run";
+                }
+                else if (status_id == 2) {
+                    return "Running";
+                }
+                else {
+                    return "Finished";
+                }
+            }
+        };
 
         // Create a YUI sandbox to create the file uploader.
         YUI().use('querystring' , 'node', 'uploader', 'uploader-flash', function (Y) {
             var uploader = null;
             var collection_id = Y.QueryString.parse(window.location.search.replace('?', '')).collection_id;
             LoadVideos(collection_id);
+            LoadProcessStatus(collection_id);
 
             if (Y.Uploader.TYPE != "none") {
                 // Initalize the uploader.

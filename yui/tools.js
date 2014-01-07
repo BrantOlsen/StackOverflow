@@ -301,7 +301,7 @@ exports.get_process_by_run_for_id = function(run_for_id, callback) {
     var conn = this.connect_to_database();
     conn.connect();
 
-    var sql = 'SELECT process_id FROM aladdin.process_job ' +
+    var sql = 'SELECT process_id, status FROM aladdin.process_job ' +
               'WHERE run_for_id = ?';
     var post = [run_for_id];
 
@@ -309,10 +309,10 @@ exports.get_process_by_run_for_id = function(run_for_id, callback) {
         if (err) throw err;
 
         if (rows.length > 0) {
-            callback(rows[0].process_id);
+            callback(rows[0].process_id, rows[0].status);
         }
         else {
-            callback(null);
+            callback(null, null);
         }
     });
     conn.end();

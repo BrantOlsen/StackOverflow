@@ -33,6 +33,15 @@ app.get('/save_collection', function(req, res) {
 app.get('/process_collection', function(req, res) {
     tools.start_process(res, req.query.collection_id);
 });
+app.get('/get_process_status', function(req, res) {
+    tools.get_unique_id_lookup({collection_id: req.query.collection_id}, function(run_for_id) {
+        tools.get_process_by_run_for_id(run_for_id, function(process_id, status) {
+            res.writeHead(200, {'Content-Type': 'application/json'});
+            res.write(JSON.stringify(status));
+            res.end();
+        });
+    });
+});
 app.post('/save_video', function(req, res) {
     var video_name = req.files.Filedata.name;
     var dir_name = req.files.Filedata.path;
